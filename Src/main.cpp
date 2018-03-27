@@ -137,8 +137,15 @@ static void MX_USB_OTG_HS_HCD_Init(void);
 static void MX_DMA2D_Init(void);
 void StartDefaultTask(void const *argument);
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 
+#ifdef __cplusplus
+}
+#endif
 
 
 
