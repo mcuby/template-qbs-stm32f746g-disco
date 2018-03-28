@@ -53,6 +53,8 @@ CppApplication {
     property string Src: Home + "/Src"
     property string startup: Home + "/startup"
     property string USB_HOST: Home + "/Middlewares/ST/STM32_USB_Host_Library"
+    property string STemWin: Home + "/STemWin"
+    property string GUIBuilder: Home + "/GUIBuilder"
 
     Group {
         //Имя группы
@@ -65,6 +67,30 @@ CppApplication {
         ]
         //Пути до библиотек
         cpp.libraryPaths: []
+    }
+
+    Group {
+        //Имя группы
+        name: "STemWin"
+        //Список файлов в данном проекте.
+        files: [
+            STemWin + "/App/*.c",
+            STemWin + "/App/*.h",
+            STemWin + "/Target/*.c",
+            STemWin + "/Target/*.h",
+            Home + "/Middlewares/ST/STemWin/inc/*.h",
+            Home + "/Middlewares/ST/STemWin/OS/*.c",
+            Home + "/Middlewares/ST/STemWin/Lib/*.a",
+        ]
+    }
+
+    Group {
+        //Имя группы
+        name: "GUIBuilder"
+        //Список файлов в данном проекте.
+        files: [
+            GUIBuilder + "/*.c",
+        ]
     }
 
     Group {
@@ -196,6 +222,19 @@ CppApplication {
 
         USB_HOST + "/Core/Inc",
         USB_HOST + "/Class/CDC/Inc",
+
+
+        STemWin + "/App",
+        STemWin + "/Target",
+        Home + "/Middlewares/ST/STemWin/inc",
+    ]
+
+    cpp.libraryPaths: [
+        Home + "/Middlewares/ST/STemWin/Lib/*.a",
+    ]
+
+    cpp.staticLibraries: [
+        Home + "/Middlewares/ST/STemWin/Lib/STemWin540_CM7_OS_GCC_ot_ARGB.a",
     ]
 
     cpp.defines: [

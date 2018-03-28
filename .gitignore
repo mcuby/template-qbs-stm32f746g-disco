@@ -8,3 +8,19 @@
 *.lock
 
 *.map
+
+*.scratch
+
+\.cproject
+
+\.project
+
+\.mxproject
+
+GUIBuilder/GUIBuilder\.exe
+
+GUIBuilder/GUIBuilder\.ini
+
+*.exe
+
+*.bat

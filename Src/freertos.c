@@ -1,4 +1,4 @@
-﻿/**
+/**
   ******************************************************************************
   * File Name          : freertos.c
   * Description        : Code for freertos applications
