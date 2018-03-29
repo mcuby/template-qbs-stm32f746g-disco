@@ -44,17 +44,23 @@ CppApplication {
     cpp.executableSuffix: ".elf"
 
     property string Home: path + "/.."
+    property string Config: Home + "/Config"
     property string FreeRTOS: Home + "/Middlewares/Third_Party/FreeRTOS"
     property string CMSIS_RTOS: FreeRTOS + "/Source/CMSIS_RTOS"
     property string FatFs: Home + "/Middlewares/Third_Party/FatFs"
     property string HAL: Home + "/Drivers/STM32F7xx_HAL_Driver"
     property string CMSIS: Home + "/Drivers/CMSIS"
-    property string Inc: Home + "/Inc"
-    property string Src: Home + "/Src"
+    property string Inc: Home + "/Core/Inc"
+    property string Src: Home + "/Core/Src"
     property string startup: Home + "/startup"
     property string USB_HOST: Home + "/Middlewares/ST/STM32_USB_Host_Library"
-    property string STemWin: Home + "/STemWin"
+    property string STemWin: Home + "/Gui"
     property string GUIBuilder: Home + "/GUIBuilder"
+    property string BSP: Home + "/Drivers/BSP/STM32746G-Discovery"
+    property string Utilities: Home + "/Utilities"
+    property string Components: Home + "/Drivers/BSP/Components"
+    property string Modules: Home + "/Modules"
+    property string lwip: Home + "/Middlewares/Third_Party/LwIP"
 
     Group {
         //Имя группы
@@ -71,16 +77,129 @@ CppApplication {
 
     Group {
         //Имя группы
+        name: "lwip"
+        //Список файлов в данном проекте.
+        files: [
+            lwip + "/src/include/*/*.h",
+            lwip + "/src/include/*/*/*.h",
+            lwip + "/src/netif/*.c",
+            lwip + "/system/*.h",
+            lwip + "/system/OS/*.h",
+            lwip + "/src/api/*.c",
+            lwip + "/src/core/*.c",
+            lwip + "/src/api/*.c",
+            lwip + "/src/core/ipv4/*.c",
+            lwip + "/system/OS/*.c",
+        ]
+    }
+
+    Group {
+        //Имя группы
+        name: "Modules"
+        //Список файлов в данном проекте.
+        files: [
+            Modules + "/vnc_server/*.c",
+            Modules + "/vnc_server/*.h",
+            Modules + "/videoplayer/*.h",
+            Modules + "/videoplayer/*.c",
+            Modules + "/Common/*.c",
+            Modules + "/Common/*.h",
+            Modules + "/audio_recorder/*.c",
+            Modules + "/audio_recorder/*.h",
+            Modules + "/audio_player/*.c",
+            Modules + "/audio_player/*.h",
+            Modules + "/audio_player/Addons/SpiritDSP_LoudnessControl/*.h",
+            Modules + "/audio_player/Addons/SpiritDSP_LoudnessControl/*.a",
+            Modules + "/audio_player/Addons/SpiritDSP_Equalizer/*.a",
+            Modules + "/audio_player/Addons/SpiritDSP_Equalizer/*.h",
+            Modules + "/audio_player/Addons/SpiritDSP_Mixer/*.h",
+        ]
+        cpp.libraryPaths: [
+             STemWin + "/STemWin_Addons",
+             Home + "/Middlewares/ST/STemWin/Lib",
+        ]
+
+        cpp.staticLibraries: [
+            ":STM32746G_Discovery_STemWin_Addons_GCC.a",
+            ":STemWin540_CM7_OS_GCC_ot.a",
+        ]
+    }
+
+    Group {
+        //Имя группы
+        name: "Components"
+        //Список файлов в данном проекте.
+        files: [
+            Components + "/ft5336/*.c",
+            Components + "/ft5336/*.h",
+            Components + "/wm8994/*.c",
+            Components + "/wm8994/*.h",
+        ]
+    }
+
+    Group {
+        //Имя группы
+        name: "Utilities"
+        //Список файлов в данном проекте.
+        files: [
+            Utilities + "/CPU/*.h",
+            Utilities + "/CPU/*.c",
+            //Utilities + "/Fonts/*.h",
+            //Utilities + "/Fonts/*.c",
+        ]
+    }
+
+    Group {
+        //Имя группы
+        name: "BSP"
+        //Список файлов в данном проекте.
+        files: [
+            BSP + "/*.c",
+            BSP + "/*.h",
+        ]
+    }
+
+    Group {
+        //Имя группы
+        name: "Config"
+        //Список файлов в данном проекте.
+        files: [
+            Config + "/*.h",
+            Config + "/*.c",
+        ]
+    }
+
+    Group {
+        //Имя группы
         name: "STemWin"
         //Список файлов в данном проекте.
         files: [
-            STemWin + "/App/*.c",
-            STemWin + "/App/*.h",
+            STemWin + "/Core/audio_player/*win.c",
+            STemWin + "/Core/audio_recorder/*win.c",
+            STemWin + "/Core/games/*win.c",
+            STemWin + "/Core/gardening_control/*win.c",
+            STemWin + "/Core/home_alarme/*win.c",
+            STemWin + "/Core/settings/*win.c",
+            STemWin + "/Core/videoplayer/*win.c",
+            STemWin + "/Core/vnc_server/*win.c",
             STemWin + "/Target/*.c",
             STemWin + "/Target/*.h",
+            STemWin + "/STemWin_Addons/*.c",
+            STemWin + "/STemWin_Addons/*.h",
+            STemWin + "/STemWin_Addons/STM32746G_Discovery_STemWin_Addons_GCC.a",
             Home + "/Middlewares/ST/STemWin/inc/*.h",
-            Home + "/Middlewares/ST/STemWin/OS/*.c",
-            Home + "/Middlewares/ST/STemWin/Lib/*.a",
+            Home + "/Middlewares/ST/STemWin/OS/GUI_X_OS.c",
+            Home + "/Middlewares/ST/STemWin/Lib/STemWin540_CM7_OS_GCC_ot.a",
+        ]
+
+        cpp.libraryPaths: [
+             STemWin + "/STemWin_Addons",
+             Home + "/Middlewares/ST/STemWin/Lib",
+        ]
+
+        cpp.staticLibraries: [
+            ":STM32746G_Discovery_STemWin_Addons_GCC.a",
+            ":STemWin540_CM7_OS_GCC_ot.a",
         ]
     }
 
@@ -102,7 +221,7 @@ CppApplication {
             FreeRTOS + "/Source/include/*.h",
             FreeRTOS + "/Source/portable/GCC/ARM_CM7/r0p1/*.h",
             FreeRTOS + "/Source/portable/GCC/ARM_CM7/r0p1/*.c",
-            //FreeRTOS + "/Source/portable/Common/mpu_wrappers.c",
+            FreeRTOS + "/Source/portable/Common/mpu_wrappers.c",
             //FreeRTOS + "/Source/portable/MemMang/heap_1.c",
             //FreeRTOS + "/Source/portable/MemMang/heap_2.c",
             //FreeRTOS + "/Source/portable/MemMang/heap_3.c",
@@ -128,7 +247,8 @@ CppApplication {
         files: [
             FatFs + "/src/*.c",
             FatFs + "/src/*.h",
-            FatFs + "/src/option/*.c",
+            FatFs + "/src/option/syscall.c",
+            FatFs + "/src/option/unicode.c",
         ]
     }
 
@@ -141,6 +261,11 @@ CppApplication {
             HAL + "/Inc/*.h",
             HAL + "/Inc/Legacy/*.h",
         ]
+        excludeFiles: [
+            HAL + "/Src/stm32f7xx_hal_timebase_rtc_alarm_template.c",
+            HAL + "/Src/stm32f7xx_hal_timebase_rtc_wakeup_template.c",
+            HAL + "/Src/stm32f7xx_hal_timebase_tim_template.c",
+        ]
     }
 
     Group {
@@ -151,6 +276,9 @@ CppApplication {
             CMSIS + "/Include/*.h",
             CMSIS + "/Device/ST/STM32F7xx/Source/Templates/*",
             CMSIS + "/Device/ST/STM32F7xx/Include/*.h",
+        ]
+        excludeFiles: [
+            CMSIS + "/Device/ST/STM32F7xx/Source/Templates/system_stm32f7xx.c",
         ]
     }
 
@@ -171,6 +299,15 @@ CppApplication {
             Src + "/*.c",
             Src + "/*.cpp",
         ]
+        cpp.libraryPaths: [
+             STemWin + "/STemWin_Addons",
+             Home + "/Middlewares/ST/STemWin/Lib",
+        ]
+
+        cpp.staticLibraries: [
+            ":STM32746G_Discovery_STemWin_Addons_GCC.a",
+            ":STemWin540_CM7_OS_GCC_ot.a",
+        ]
     }
 
     Group {
@@ -189,8 +326,12 @@ CppApplication {
         files: [
             USB_HOST + "/Core/Src/*.c",
             USB_HOST + "/Core/Inc/*.h",
-            USB_HOST + "/Class/CDC/Src/*.c",
-            USB_HOST + "/Class/CDC/Inc/*.h",
+            USB_HOST + "/Class/MSC/Src/*.c",
+            USB_HOST + "/Class/MSC/Inc/*.h",
+        ]
+        excludeFiles: [
+            USB_HOST + "/Core/Src/usbh_conf_template.c",
+            USB_HOST + "/Core/Inc/usbh_conf_template.h",
         ]
     }
 
@@ -205,6 +346,8 @@ CppApplication {
 
     //Каталоги с включенными файлами
     cpp.includePaths: [
+        Config,
+
         CMSIS + "/Include",
         CMSIS + "/Device/ST/STM32F7xx/Include",
 
@@ -221,27 +364,45 @@ CppApplication {
         HAL + "/Inc/Legacy",
 
         USB_HOST + "/Core/Inc",
-        USB_HOST + "/Class/CDC/Inc",
+        USB_HOST + "/Class/MSC/Inc",
 
-
-        STemWin + "/App",
         STemWin + "/Target",
+        STemWin + "/STemWin_Addons",
         Home + "/Middlewares/ST/STemWin/inc",
-    ]
+        Home + "/Middlewares/ST/STemWin",
 
-    cpp.libraryPaths: [
-        Home + "/Middlewares/ST/STemWin/Lib/*.a",
-    ]
+        Utilities + "/CPU",
+        Utilities + "/Fonts",
+        BSP,
 
-    cpp.staticLibraries: [
-        Home + "/Middlewares/ST/STemWin/Lib/STemWin540_CM7_OS_GCC_ot_ARGB.a",
+        Components,
+
+        Modules + "/vnc_server",
+        Modules + "/videoplayer",
+        Modules + "/Common",
+        Modules + "/audio_recorder",
+        Modules + "/audio_player",
+        Modules + "/audio_player/Addons/SpiritDSP_LoudnessControl",
+        Modules + "/audio_player/Addons/SpiritDSP_Equalizer",
+        Modules + "/audio_player/Addons/SpiritDSP_Mixer",
+
+
+        lwip + "/src/include",
+        lwip + "/system",
+        lwip + "/system/OS",
+
+        Components + "/ft5336",
+        Components + "/wm8994",
+
     ]
 
     cpp.defines: [
         "USE_HAL_DRIVER",
         "STM32F746xx",
+        "USE_STM32746G_DISCOVERY",
         "__weak=__attribute__((weak))",
         "__packed=__attribute__((__packed__))",
+
     ]
 
     //    --------------------------------------------------------------------
@@ -333,6 +494,10 @@ CppApplication {
         "-mfloat-abi=hard",
         "-mfpu=fpv5-d16",
         "-mthumb",
+//        "-fdata-sections",
+//        "-ffunction-sections",
+//        "-fno-inline",
+//        "-flto"
     ]
 
 
@@ -343,7 +508,8 @@ CppApplication {
         "-mthumb",
         "-Xlinker",
         "--gc-sections",
-        "--specs=nosys.specs",
+        "-specs=nosys.specs",
+        "-specs=nano.specs",
         "-Wl,-Map=" + path + "/../QT-STM32746G-Discovery.map",
 
 //        "-Xlinker --cref",                    //Cross reference
@@ -355,9 +521,36 @@ CppApplication {
 
 
     cpp.linkerFlags: [
-        "-T" +  path + "/../STM32F746NGHx_FLASH.ld",
+        "--start-group",
+        "-T" + path + "/../STM32F746NGHx_FLASH.ld",
+        "-l" + ":STemWin540_CM7_OS_GCC_ot.a",
+        "-l" + ":STM32746G_Discovery_STemWin_Addons_GCC.a",
+        "-L" + path + "/../Middlewares/ST/STemWin/Lib",
+        "-L" + path + "/../Gui/STemWin_Addons",
+        "-lnosys",
+        "-lgcc",
+        "-lc",
+        "-lstdc++",
+        "-lm"
     ]
 
+    cpp.libraryPaths: [
+        //Home + "/Middlewares/ST/STemWin/Lib/STemWin540_CM7_OS_GCC.a",
+        //Home + "/Middlewares/ST/STemWin/Lib/STemWin540_CM7_OS_GCC_ARGB.a",
+        Home + "/Middlewares/ST/STemWin/Lib",
+        //Home + "/Middlewares/ST/STemWin/Lib/STemWin540_CM7_OS_GCC_ot_ARGB.a",
+        STemWin + "/STemWin_Addons",
+    ]
+
+    cpp.staticLibraries: [
+        //Home + "/Middlewares/ST/STemWin/Lib/STemWin540_CM7_OS_GCC.a",
+        //Home + "/Middlewares/ST/STemWin/Lib/STemWin540_CM7_OS_GCC_ARGB.a",
+        Home + "/Middlewares/ST/STemWin/Lib/STemWin540_CM7_OS_GCC_ot.a",
+        ":STemWin540_CM7_OS_GCC_ot.a",
+        //Home + "/Middlewares/ST/STemWin/Lib/STemWin540_CM7_OS_GCC_ot_ARGB.a",
+        STemWin + "/STemWin_Addons/STM32746G_Discovery_STemWin_Addons_GCC.a",
+        ":STM32746G_Discovery_STemWin_Addons_GCC.a",
+    ]
 
     Properties {
         condition: qbs.buildVariant === "debug"

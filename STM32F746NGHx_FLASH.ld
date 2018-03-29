@@ -5,7 +5,7 @@
 **  File        : LinkerScript.ld
 **
 **  Abstract    : Linker script for STM32F746NGHx Device with
-**                1024KByte FLASH, 320KByte RAM
+**                1024KByte FLASH, 304KByte RAM
 **
 **                Set heap size, stack size and stack location according
 **                to application requirements.
@@ -33,16 +33,23 @@
 ENTRY(Reset_Handler)
 
 /* Highest address of the user mode stack */
-_estack = 0x20050000;    /* end of RAM */
+_estack = 0x2004C000;    /* end of RAM */
 /* Generate a link error if heap and stack don't fit into RAM */
-_Min_Heap_Size = 0x1400;      /* required amount of heap  */
-_Min_Stack_Size = 0x1800; /* required amount of stack */
+_Min_Heap_Size = 0x2000;      /* required amount of heap  */
+_Min_Stack_Size = 0x200; /* required amount of stack */
 
 /* Specify the memory areas */
 MEMORY
 {
-RAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 320K
-FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 1024K
+FLASH (rx)      : ORIGIN = 0x08000000, LENGTH = 1024K
+Memory1 (xrw)   : ORIGIN = 0x2000E000, LENGTH = 0xA0
+Memory2 (xrw)   : ORIGIN = 0x2000E100, LENGTH = 0xA0
+Memory3 (xrw)   : ORIGIN = 0x2000E200, LENGTH = 0x1dc4
+Memory4 (xrw)   : ORIGIN = 0x2000FFC4, LENGTH = 0x1dc4
+RAM (xrw)       : ORIGIN = 0x20011D88, LENGTH = 0x3C320
+RAM1 (xrw)      : ORIGIN = 0x20000000, LENGTH = 0x4818
+RAM2 (xrw)      : ORIGIN = 0x20006024, LENGTH = 0x7800
+QSPI (rx)       : ORIGIN = 0x90000000, LENGTH = 16M
 }
 
 /* Define output sections */
@@ -164,6 +171,13 @@ SECTIONS
   }
 
   .ARM.attributes 0 : { *(.ARM.attributes) }
+  .RxDecripSection (NOLOAD) : { *(.RxDecripSection) } >Memory1
+  .TxDescripSection (NOLOAD) : { *(.TxDescripSection) } >Memory2
+  .RxBUF (NOLOAD) : { *(.RxBUF) } >Memory3
+  .TxBUF (NOLOAD) : { *(.TxBUF) } >Memory4
+  .RamData1 (NOLOAD) : { *(.RamData1) } >RAM1
+  .RamData2 (NOLOAD): { *(.RamData2) } >RAM2
+  .ExtQSPIFlashSection : { *(.ExtQSPIFlashSection) } >QSPI
 }
 
 

@@ -24,3 +24,27 @@ GUIBuilder/GUIBuilder\.ini
 *.exe
 
 *.bat
+
+*.html
+
+*.chm
+
+*.txt
+
+*.js
+
+*.gif
+
+*.png
+
+*.bmp
+
+*.avi
+
+*.jpg
+
+*.wav
+
+*.emf
+
+*.vcxproj
