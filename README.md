@@ -1,14 +1,20 @@
 # Базовый шаблон проекта для stm32f746g-disco (qbs)
 
 Установите openocd (необходимо наличие lib usb): 
-git clone http://openocd.zylin.com/openocd 
-./bootstrap 
-./configure --enable-ft2232_ftd2xx 
-make 
-sudo make install
+* git clone http://openocd.zylin.com/openocd 
+* ./bootstrap 
+* ./configure --enable-ft2232_ftd2xx 
+* make 
+* sudo make install
 
-Подключите stm32f746g-disco к ПК, откройте терминал и выполните следующую команду: openocd -f board/stm32f746g-disco.cfg -c "init" -c "reset init" -c "reset" -c "shutdown" 
-Вы должны увидеть информацию следующего характера: 
+
+
+Подключите stm32f746g-disco к ПК, откройте терминал и выполните следующую команду: 
+
+* openocd -f board/stm32f746g-disco.cfg -c "init" -c "reset init" -c "reset" -c "shutdown" 
+
+Вы должны увидеть информацию следующего характера:
+~~~~
 Open On-Chip Debugger 0.10.0+dev-00208-gc892814 (2018-04-02-12:10)
 Licensed under GNU GPL v2
 For bug reports, read
@@ -28,9 +34,10 @@ Info : stm32f7x.cpu: hardware has 8 breakpoints, 4 watchpoints
 target halted due to debug-request, current mode: Thread 
 xPSR: 0x01000000 pc: 0x0802a0b8 msp: 0x2004c000
 adapter speed: 4000 kHz
-shutdown command invoked
+shutdown command invoked 
+~~~~
 
 При сборке проекта происходит прошивка внутренней и внешней памяти (openocd должен быть отключен).
 
-Для отладки должен быть выбран debug режим и запущен openocd, для запуска выполните команду в терминале: 
-openocd -f board/stm32f746g-disco.cfg -c "init" -c "reset init"
+Для отладки должен быть выбран debug режим и запущен openocd, для запуска выполните команду в терминале:
+* openocd -f board/stm32f746g-disco.cfg -c "init" -c "reset init"
