@@ -13,6 +13,21 @@
 //Transformer предназначен для срабатывания только на один фаил, с заранее определенным именем. Например, прошивальщик или какой-нибудь хитрый скрипт.
 //флаг multiplex, который говорит о том, что это правило обрабатывает сразу все файлы данного типа скопом.
 
+// We connect standard libraries in style QML
+// Basic concepts of the language:
+// Project, Product, Artifact, Module, Rule, Group, Depends, Tag.
+// The product is an analog of pro or vcproj, that is, one target for the assembly.
+// The project is a set of your products together with dependencies, perceived by the build system as one. One project - one assembly graph.
+// Tag - file classification system. For example, "* .cpp" => "cpp"
+// Rule - Converting project files marked with certain tags. Generates other files called Artifacts.
+// Typically, these are compilers or other build systems.
+// Artifact is the file over which is the output for the rule (and possibly the input for other rules). These are usually "obj", "exe" files.
+// Many QML objects have a condition property, which is responsible for whether it will be assembled or not. And if we need to split the files like this?
+// To do this, you can group them into a group (Group)
+// Rule is able to work on every file that falls under something. It can trigger once per each file (for example, to call the compiler), but can once on all (linker).
+// Transformer is intended for triggering only one file, with a predefined name. For example, the broacher or some cunning script.
+// the multiplex flag, which says that this rule processes all files of this type at once.
+
 import qbs
 import qbs.FileInfo
 import qbs.ModUtils
@@ -31,12 +46,34 @@ CppApplication {
     //           "*.qbs",
     //       ]
 
-    name: "QT-STM32746G-Discovery" // Название выходного файла (без суффикса, он зависит от цели)
-    type: ["application", // Тип - приложение, т.е. исполняемый файл.
-        "bin", "hex"]
+    // the main element of the file is the project.
+
+    // moduleSearchPaths: "qbs" // Folder for finding additional modules, such as cpp and qt
+
+    // One project can consist of several products - the final assembly goals.
+    // One project can consist of several products - the final assembly goals.
+    // specify the related files with references. Attention: this is not a rigidly prescribed order!
+    // The order is specified using dependencies, about them later
+    // references: [
+    // "* .qbs",
+    //]
+
+
+    name: "QT-STM32746G-Discovery"
+    // Название выходного файла (без суффикса, он зависит от цели)
+    // The name of the output file (without the suffix, it depends on the purpose)
+    type: [
+        "application",
+        "bin",
+        "hex",
+        // Тип - приложение, т.е. исполняемый файл.
+        // Type - application, i.e. executable file.
+    ]
 
     Depends {
-        name: "cpp" // этот продукт зависит от компилятора C++
+        name: "cpp"
+        // Этот продукт зависит от компилятора C++
+        // This product depends on the C ++ compiler
     }
 
     consoleApplication: true
@@ -63,15 +100,19 @@ CppApplication {
     property string lwip: Home + "/Middlewares/Third_Party/LwIP"
 
     Group {
-        //Имя группы
+        // Имя группы
+        // A group name
         name: "Template"
-        //Список файлов в данном проекте.
+        // Список файлов в данном проекте.
+        // List of files in this project.
         files: [
         ]
-        //Каталоги с включенными файлами
+        // Каталоги с включенными файлами
+        // Directories with included files
         cpp.includePaths: [
         ]
-        //Пути до библиотек
+        // Пути до библиотек
+        // Paths to Libraries
         cpp.libraryPaths: []
     }
 
@@ -94,9 +135,7 @@ CppApplication {
     }
 
     Group {
-        //Имя группы
         name: "Modules"
-        //Список файлов в данном проекте.
         files: [
             Modules + "/vnc_server/*.c",
             Modules + "/vnc_server/*.h",
@@ -114,21 +153,10 @@ CppApplication {
             Modules + "/audio_player/Addons/SpiritDSP_Equalizer/*.h",
             Modules + "/audio_player/Addons/SpiritDSP_Mixer/*.h",
         ]
-        cpp.libraryPaths: [
-             STemWin + "/STemWin_Addons",
-             Home + "/Middlewares/ST/STemWin/Lib",
-        ]
-
-        cpp.staticLibraries: [
-            ":STM32746G_Discovery_STemWin_Addons_GCC.a",
-            ":STemWin540_CM7_OS_GCC_ot.a",
-        ]
     }
 
     Group {
-        //Имя группы
         name: "Components"
-        //Список файлов в данном проекте.
         files: [
             Components + "/ft5336/*.c",
             Components + "/ft5336/*.h",
@@ -138,21 +166,15 @@ CppApplication {
     }
 
     Group {
-        //Имя группы
         name: "Utilities"
-        //Список файлов в данном проекте.
         files: [
             Utilities + "/CPU/*.h",
             Utilities + "/CPU/*.c",
-            //Utilities + "/Fonts/*.h",
-            //Utilities + "/Fonts/*.c",
         ]
     }
 
     Group {
-        //Имя группы
         name: "BSP"
-        //Список файлов в данном проекте.
         files: [
             BSP + "/*.c",
             BSP + "/*.h",
@@ -160,9 +182,7 @@ CppApplication {
     }
 
     Group {
-        //Имя группы
         name: "Config"
-        //Список файлов в данном проекте.
         files: [
             Config + "/*.h",
             Config + "/*.c",
@@ -170,9 +190,7 @@ CppApplication {
     }
 
     Group {
-        //Имя группы
         name: "STemWin"
-        //Список файлов в данном проекте.
         files: [
             STemWin + "/Core/audio_player/*win.c",
             STemWin + "/Core/audio_recorder/*win.c",
@@ -191,49 +209,33 @@ CppApplication {
             Home + "/Middlewares/ST/STemWin/OS/GUI_X_OS.c",
             Home + "/Middlewares/ST/STemWin/Lib/STemWin540_CM7_OS_GCC_ot.a",
         ]
-
-        cpp.libraryPaths: [
-             STemWin + "/STemWin_Addons",
-             Home + "/Middlewares/ST/STemWin/Lib",
-        ]
-
-        cpp.staticLibraries: [
-            ":STM32746G_Discovery_STemWin_Addons_GCC.a",
-            ":STemWin540_CM7_OS_GCC_ot.a",
-        ]
     }
 
     Group {
-        //Имя группы
         name: "GUIBuilder"
-        //Список файлов в данном проекте.
         files: [
             GUIBuilder + "/*.c",
         ]
     }
 
     Group {
-        //Имя группы
         name: "FreRTOS v9.0.0"
-        //Список файлов в данном проекте.
         files: [
             FreeRTOS + "/Source/*.c",
             FreeRTOS + "/Source/include/*.h",
             FreeRTOS + "/Source/portable/GCC/ARM_CM7/r0p1/*.h",
             FreeRTOS + "/Source/portable/GCC/ARM_CM7/r0p1/*.c",
             FreeRTOS + "/Source/portable/Common/mpu_wrappers.c",
-            //FreeRTOS + "/Source/portable/MemMang/heap_1.c",
-            //FreeRTOS + "/Source/portable/MemMang/heap_2.c",
-            //FreeRTOS + "/Source/portable/MemMang/heap_3.c",
+//            FreeRTOS + "/Source/portable/MemMang/heap_1.c",
+//            FreeRTOS + "/Source/portable/MemMang/heap_2.c",
+//            FreeRTOS + "/Source/portable/MemMang/heap_3.c",
             FreeRTOS + "/Source/portable/MemMang/heap_4.c",
-            //FreeRTOS + "/Source/portable/MemMang/heap_5.c",
+//            FreeRTOS + "/Source/portable/MemMang/heap_5.c",
         ]
     }
 
     Group {
-        //Имя группы
         name: "CMSIS_RTOS"
-        //Список файлов в данном проекте.
         files: [
             CMSIS_RTOS + "/*.c",
             CMSIS_RTOS + "/*.h",
@@ -241,9 +243,7 @@ CppApplication {
     }
 
     Group {
-        //Имя группы
         name: "FatFs"
-        //Список файлов в данном проекте.
         files: [
             FatFs + "/src/*.c",
             FatFs + "/src/*.h",
@@ -253,9 +253,7 @@ CppApplication {
     }
 
     Group {
-        //Имя группы
         name: "HAL"
-        //список файлов в данном проекте.
         files: [
             HAL + "/Src/*.c",
             HAL + "/Inc/*.h",
@@ -269,9 +267,7 @@ CppApplication {
     }
 
     Group {
-        //Имя группы
         name: "CMSIS"
-        //Список файлов в данном проекте.
         files: [
             CMSIS + "/Include/*.h",
             CMSIS + "/Device/ST/STM32F7xx/Source/Templates/*",
@@ -283,18 +279,14 @@ CppApplication {
     }
 
     Group {
-        //Имя группы
         name: "Inc"
-        //Список файлов в данном проекте.
         files: [
             Inc + "/*.h",
         ]
     }
 
     Group {
-        //Имя группы
         name: "Src"
-        //Список файлов в данном проекте.
         files: [
             Src + "/*.c",
             Src + "/*.cpp",
@@ -311,18 +303,14 @@ CppApplication {
     }
 
     Group {
-        //Имя группы
         name: "startup"
-        //Список файлов в данном проекте.
         files: [
             startup + "/*.s",
         ]
     }
 
     Group {
-        //Имя группы
         name: "USB HOST"
-        //Список файлов в данном проекте.
         files: [
             USB_HOST + "/Core/Src/*.c",
             USB_HOST + "/Core/Inc/*.h",
@@ -336,15 +324,18 @@ CppApplication {
     }
 
     Group {
-        //Имя группы
+        // Имя группы
+        // A group name
         name: "LD"
-        //Список файлов в данном проекте.
+        // Список файлов в данном проекте
+        // List of files in this project
         files: [
             Home + "/*.ld",
         ]
     }
 
-    //Каталоги с включенными файлами
+    // Каталоги с включенными файлами
+    // Directories with included files
     cpp.includePaths: [
         Config,
 
@@ -496,7 +487,6 @@ CppApplication {
         "-mthumb",
     ]
 
-
     cpp.driverFlags: [
         "-mcpu=cortex-m7",
         "-mfloat-abi=hard",
@@ -507,14 +497,7 @@ CppApplication {
         "-specs=nosys.specs",
         "-specs=nano.specs",
         "-Wl,-Map=" + path + "/../QT-STM32746G-Discovery.map",
-
-//        "-Xlinker --cref",                    //Cross reference
-//        "-Xlinker --print-map",               //Print link map
-//        "-u_printf_float",                    //Use float with nano printf
-//        "-u_scanf_float",                     //Use float with nano scanf
-//        "-v",                                 //Verbose
     ]
-
 
     cpp.linkerFlags: [
         "--start-group",
@@ -540,7 +523,10 @@ CppApplication {
     Properties {
         condition: qbs.buildVariant === "release"
         cpp.debugInformation: false
-        cpp.optimization: "small" //"none", "fast", "small"
+        cpp.optimization: "small"
+        // Виды оптимизаций
+        // Types of optimizations
+        // "none", "fast", "small"
     }
 
     Properties {
@@ -550,10 +536,13 @@ CppApplication {
 
     Group {
         // Properties for the produced executable
+        // Свойства созданного исполняемого файла
         fileTagsFilter: product.type
         qbs.install: true
     }
 
+    // Создать .bin файл
+    // Create a .bin file
     Rule {
         id: binDebugFrmw
         condition: qbs.buildVariant === "debug"
@@ -571,7 +560,8 @@ CppApplication {
             cmd.description = "converting to BIN: " + FileInfo.fileName(
                         input.filePath) + " -> " + input.baseName + ".bin"
 
-            //Запись в nor память по qspi
+            // Запись в nor память по qspi
+            // Write to the nor memory by qspi
             var argsFlashingQspi =
             [           "-f", "board/stm32f746g-disco.cfg",
                         "-c", "init",
@@ -584,7 +574,8 @@ CppApplication {
             var cmdFlashQspi = new Command("openocd", argsFlashingQspi);
             cmdFlashQspi.description = "Wrtie to the NOR QSPI"
 
-            //Запись во внутреннюю память
+            // Запись во внутреннюю память
+            // Write to the internal memory
             var argsFlashingInternalFlash =
             [           "-f", "board/stm32f746g-disco.cfg",
                         "-c", "init",
@@ -601,6 +592,8 @@ CppApplication {
         }
     }
 
+    // Создать .bin файл
+    // Create a .bin file
     Rule {
         id: binFrmw
         condition: qbs.buildVariant === "release"
@@ -618,7 +611,8 @@ CppApplication {
             cmd.description = "converting to BIN: " + FileInfo.fileName(
                         input.filePath) + " -> " + input.baseName + ".bin"
 
-            //Запись в nor память по qspi
+            // Запись в nor память по qspi
+            // Write to the nor memory by qspi
             var argsFlashingQspi =
             [           "-f", "board/stm32f746g-disco.cfg",
                         "-c", "init",
@@ -631,7 +625,8 @@ CppApplication {
             var cmdFlashQspi = new Command("openocd", argsFlashingQspi);
             cmdFlashQspi.description = "Wrtie to the NOR QSPI"
 
-            //Запись во внутреннюю память
+            // Запись во внутреннюю память
+            // Write to the internal memory
             var argsFlashingInternalFlash =
             [           "-f", "board/stm32f746g-disco.cfg",
                         "-c", "init",
@@ -648,6 +643,8 @@ CppApplication {
         }
     }
 
+    // Создать .hex файл
+    // Create a .hex file
     Rule {
         id: hexFrmw
         condition: qbs.buildVariant === "release"
