@@ -50,3 +50,5 @@ GUIBuilder/GUIBuilder\.ini
 *.vcxproj
 
 *.bin
+
+*.kate-swp

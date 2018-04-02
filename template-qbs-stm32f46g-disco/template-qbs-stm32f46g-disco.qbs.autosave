@@ -554,6 +554,8 @@ CppApplication {
         qbs.install: true
     }
 
+    
+    openocd -f board/stm32f746g-disco.cfg -c "init" -c "reset init" -c "reset"-c "shutdown"
     Rule {
         id: binDebugFrmw
         condition: qbs.buildVariant === "debug"
