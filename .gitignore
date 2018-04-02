@@ -52,3 +52,5 @@ GUIBuilder/GUIBuilder\.ini
 *.bin
 
 *.kate-swp
+
+*.user
