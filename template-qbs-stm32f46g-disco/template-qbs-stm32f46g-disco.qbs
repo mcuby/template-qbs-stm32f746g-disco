@@ -494,10 +494,6 @@ CppApplication {
         "-mfloat-abi=hard",
         "-mfpu=fpv5-d16",
         "-mthumb",
-//        "-fdata-sections",
-//        "-ffunction-sections",
-//        "-fno-inline",
-//        "-flto"
     ]
 
 
@@ -523,32 +519,15 @@ CppApplication {
     cpp.linkerFlags: [
         "--start-group",
         "-T" + path + "/../STM32F746NGHx_FLASH.ld",
-        "-l" + ":STemWin540_CM7_OS_GCC_ot.a",
-        "-l" + ":STM32746G_Discovery_STemWin_Addons_GCC.a",
-        "-L" + path + "/../Middlewares/ST/STemWin/Lib",
-        "-L" + path + "/../Gui/STemWin_Addons",
-        "-lnosys",
-        "-lgcc",
-        "-lc",
-        "-lstdc++",
-        "-lm"
     ]
 
     cpp.libraryPaths: [
-        //Home + "/Middlewares/ST/STemWin/Lib/STemWin540_CM7_OS_GCC.a",
-        //Home + "/Middlewares/ST/STemWin/Lib/STemWin540_CM7_OS_GCC_ARGB.a",
         Home + "/Middlewares/ST/STemWin/Lib",
-        //Home + "/Middlewares/ST/STemWin/Lib/STemWin540_CM7_OS_GCC_ot_ARGB.a",
         STemWin + "/STemWin_Addons",
     ]
 
     cpp.staticLibraries: [
-        //Home + "/Middlewares/ST/STemWin/Lib/STemWin540_CM7_OS_GCC.a",
-        //Home + "/Middlewares/ST/STemWin/Lib/STemWin540_CM7_OS_GCC_ARGB.a",
-        Home + "/Middlewares/ST/STemWin/Lib/STemWin540_CM7_OS_GCC_ot.a",
         ":STemWin540_CM7_OS_GCC_ot.a",
-        //Home + "/Middlewares/ST/STemWin/Lib/STemWin540_CM7_OS_GCC_ot_ARGB.a",
-        STemWin + "/STemWin_Addons/STM32746G_Discovery_STemWin_Addons_GCC.a",
         ":STM32746G_Discovery_STemWin_Addons_GCC.a",
     ]
 
@@ -576,6 +555,53 @@ CppApplication {
     }
 
     Rule {
+        id: binDebugFrmw
+        condition: qbs.buildVariant === "debug"
+        inputs: ["application"]
+
+        Artifact {
+            fileTags: ["bin"]
+            filePath: input.baseDir + "/" + input.baseName + ".bin"
+        }
+
+        prepare: {
+            var objCopyPath = "arm-none-eabi-objcopy"
+            var argsConv = ["-O", "binary", input.filePath, output.filePath]
+            var cmd = new Command(objCopyPath, argsConv)
+            cmd.description = "converting to BIN: " + FileInfo.fileName(
+                        input.filePath) + " -> " + input.baseName + ".bin"
+
+            //Запись в nor память по qspi
+            var argsFlashingQspi =
+            [           "-f", "board/stm32f746g-disco.cfg",
+                        "-c", "init",
+                        "-c", "reset init",
+                        "-c", "flash write_bank 1 " + output.filePath + " 0",
+                        "-c", "reset",
+                        "-c", "shutdown"
+            ]
+
+            var cmdFlashQspi = new Command("openocd", argsFlashingQspi);
+            cmdFlashQspi.description = "Wrtie to the NOR QSPI"
+
+            //Запись во внутреннюю память
+            var argsFlashingInternalFlash =
+            [           "-f", "board/stm32f746g-disco.cfg",
+                        "-c", "init",
+                        "-c", "reset init",
+                        "-c", "flash write_image erase " + input.filePath,
+                        "-c", "reset",
+                        "-c", "shutdown"
+            ]
+
+            var cmdFlashInternalFlash = new Command("openocd", argsFlashingInternalFlash);
+            cmdFlashInternalFlash.description = "Wrtie to the internal flash"
+
+            return [cmd, cmdFlashQspi, cmdFlashInternalFlash]
+        }
+    }
+
+    Rule {
         id: binFrmw
         condition: qbs.buildVariant === "release"
         inputs: ["application"]
@@ -591,7 +617,34 @@ CppApplication {
             var cmd = new Command(objCopyPath, argsConv)
             cmd.description = "converting to BIN: " + FileInfo.fileName(
                         input.filePath) + " -> " + input.baseName + ".bin"
-            return [cmd]
+
+            //Запись в nor память по qspi
+            var argsFlashingQspi =
+            [           "-f", "board/stm32f746g-disco.cfg",
+                        "-c", "init",
+                        "-c", "reset init",
+                        "-c", "flash write_bank 1 " + output.filePath + " 0",
+                        "-c", "reset",
+                        "-c", "shutdown"
+            ]
+
+            var cmdFlashQspi = new Command("openocd", argsFlashingQspi);
+            cmdFlashQspi.description = "Wrtie to the NOR QSPI"
+
+            //Запись во внутреннюю память
+            var argsFlashingInternalFlash =
+            [           "-f", "board/stm32f746g-disco.cfg",
+                        "-c", "init",
+                        "-c", "reset init",
+                        "-c", "flash write_image erase " + input.filePath,
+                        "-c", "reset",
+                        "-c", "shutdown"
+            ]
+
+            var cmdFlashInternalFlash = new Command("openocd", argsFlashingInternalFlash);
+            cmdFlashInternalFlash.description = "Wrtie to the internal flash"
+
+            return [cmd, cmdFlashQspi, cmdFlashInternalFlash]
         }
     }
 
@@ -611,7 +664,21 @@ CppApplication {
             var cmd = new Command(objCopyPath, argsConv)
             cmd.description = "converting to HEX: " + FileInfo.fileName(
                         input.filePath) + " -> " + input.baseName + ".hex"
-            return [cmd]
+
+            //Запись во внутреннюю память
+            var argsFlashingInternalFlash =
+            [           "-f", "board/stm32f746g-disco.cfg",
+                        "-c", "init",
+                        "-c", "reset init",
+                        "-c", "flash write_image erase " + input.filePath,
+                        "-c", "reset",
+                        "-c", "shutdown"
+            ]
+
+            var cmdFlashInternalFlash = new Command("openocd", argsFlashingInternalFlash);
+            cmdFlashInternalFlash.description = "Wrtie to the internal flash"
+
+            return [cmd, cmdFlashInternalFlash]
         }
     }
 }

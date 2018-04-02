@@ -48,3 +48,5 @@ GUIBuilder/GUIBuilder\.ini
 *.emf
 
 *.vcxproj
+
+*.bin
