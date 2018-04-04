@@ -1,7 +1,13 @@
-# Базовый шаблон проекта для stm32f746g-disco (qbs)
+﻿# Базовый шаблон проекта для stm32f746g-disco (qbs)
 
-Установите openocd (необходимо наличие lib usb): 
+Установите следующие пакеты:
+* libtool
+* eclipse-cdt-autotools
+* libusb-1.0-0-dev
+
+Установка openocd:
 * git clone http://openocd.zylin.com/openocd 
+* git fetch http://openocd.zylin.com/openocd refs/changes/18/3918/16 && git checkout FETCH_HEAD
 * ./bootstrap 
 * ./configure --enable-ft2232_ftd2xx 
 * make 
