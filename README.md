@@ -8,7 +8,6 @@
 Установка openocd:
 * git clone http://openocd.zylin.com/openocd 
 * cd openocd
-* git fetch http://openocd.zylin.com/openocd refs/changes/18/3918/16 && git checkout FETCH_HEAD
 * ./bootstrap 
 * ./configure --enable-ft2232_ftd2xx 
 * make 
@@ -48,3 +47,8 @@ shutdown command invoked
 
 Для отладки должен быть выбран debug режим и запущен openocd, для запуска выполните команду в терминале:
 * openocd -f board/stm32f746g-disco.cfg -c "init" -c "reset init"
+
+
+Добавьте файл openocd.udev в /etc/udev/rules.d/, после перезапустите правила
+
+sudo udevadm control --reload-rules
