@@ -563,7 +563,7 @@ CppApplication {
             // Запись в nor память по qspi
             // Write to the nor memory by qspi
             var argsFlashingQspi =
-            [           "-f", "board/stm32f746g-disco.cfg",
+            [           "-f", "board/stm32f7discovery.cfg",
                         "-c", "init",
                         "-c", "reset init",
                         "-c", "flash write_bank 1 " + output.filePath + " 0",
@@ -577,7 +577,7 @@ CppApplication {
             // Запись во внутреннюю память
             // Write to the internal memory
             var argsFlashingInternalFlash =
-            [           "-f", "board/stm32f746g-disco.cfg",
+            [           "-f", "board/stm32f7discovery.cfg",
                         "-c", "init",
                         "-c", "reset init",
                         "-c", "flash write_image erase " + input.filePath,
@@ -614,7 +614,7 @@ CppApplication {
             // Запись в nor память по qspi
             // Write to the nor memory by qspi
             var argsFlashingQspi =
-            [           "-f", "board/stm32f746g-disco.cfg",
+            [           "-f", "board/stm32f7discovery.cfg",
                         "-c", "init",
                         "-c", "reset init",
                         "-c", "flash write_bank 1 " + output.filePath + " 0",
@@ -628,7 +628,7 @@ CppApplication {
             // Запись во внутреннюю память
             // Write to the internal memory
             var argsFlashingInternalFlash =
-            [           "-f", "board/stm32f746g-disco.cfg",
+            [           "-f", "board/stm32f7discovery.cfg",
                         "-c", "init",
                         "-c", "reset init",
                         "-c", "flash write_image erase " + input.filePath,
