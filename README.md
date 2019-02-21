@@ -7,8 +7,8 @@
 
 Установка openocd:
 * git clone http://openocd.zylin.com/openocd 
-* git fetch http://openocd.zylin.com/openocd refs/changes/18/3918/16 && git checkout FETCH_HEAD
 * cd openocd
+* git fetch http://openocd.zylin.com/openocd refs/changes/18/3918/16 && git checkout FETCH_HEAD
 * ./bootstrap 
 * ./configure --enable-ft2232_ftd2xx 
 * make 
